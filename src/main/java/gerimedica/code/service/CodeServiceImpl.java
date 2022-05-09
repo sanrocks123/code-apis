@@ -21,87 +21,94 @@ import gerimedica.code.repository.CodeRepository;
  * @email : sanrocks123@gmail.com
  * @version : 1.0
  */
-
 @Service
 public class CodeServiceImpl implements CodeService {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private CodeRepository codeRepository;
+  @Autowired private CodeRepository codeRepository;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see gerimedica.code.service.CodeService#deleteAll()
-     */
-    @Override
-    public List<CodeData> deleteAll() {
-        final List<CodeData> result = fetchAll();
-        codeRepository.deleteAll();
-        final long count = codeRepository.count();
+  /*
+   * (non-Javadoc)
+   *
+   * @see gerimedica.code.service.CodeService#deleteAll()
+   */
+  @Override
+  public List<CodeData> deleteAll() {
+    final List<CodeData> result = fetchAll();
+    codeRepository.deleteAll();
+    final long count = codeRepository.count();
 
-        if (count == 0) {
-            log.info("deleteAll, after delete entity count: {}", count);
-            return result;
-        }
-
-        log.warn("deleteAll, seems few entities could not be deleted, count : {}", count);
-        return Collections.emptyList();
+    if (count == 0) {
+      log.info("deleteAll, after delete entity count: {}", count);
+      return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see gerimedica.code.service.CodeService#fetchAll()
-     */
-    @Override
-    public List<CodeData> fetchAll() {
-        final List<CodeData> result = new ArrayList<>();
-        codeRepository.findAll().forEach(d -> {
-            result.add(d);
-        });
+    log.warn("deleteAll, seems few entities could not be deleted, count : {}", count);
+    return Collections.emptyList();
+  }
 
-        // we can use pagination sorting interface as well, but keeping it as
-        // simple MVP
+  /*
+   * (non-Javadoc)
+   *
+   * @see gerimedica.code.service.CodeService#fetchAll()
+   */
+  @Override
+  public List<CodeData> fetchAll() {
+    final List<CodeData> result = new ArrayList<>();
+    codeRepository
+        .findAll()
+        .forEach(
+            d -> {
+              result.add(d);
+            });
 
-        log.info("fetchAll, result : {}", result);
-        return result;
+    // we can use pagination sorting interface as well, but keeping it as
+    // simple MVP
+
+    log.info("fetchAll, result : {}", result);
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see gerimedica.code.service.CodeService#fetchByCode(java.lang.String)
+   */
+  @Override
+  public CodeData fetchByCode(String code) {
+
+    CodeData data = codeRepository.findByCode(code);
+    log.info("findByCode: {}", data);
+
+    final Optional<CodeData> result =
+        StreamSupport.stream(codeRepository.findAll().spliterator(), true)
+            .filter(x -> x.getCode().equals(code))
+            .findAny();
+
+    log.info("fetchByCode, code: {},  result : {}", code, result);
+
+    if (result.isPresent()) {
+      log.info("fetchByCode, entity found : {}", result.get());
+      return result.get();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see gerimedica.code.service.CodeService#fetchByCode(java.lang.String)
-     */
-    @Override
-    public CodeData fetchByCode(String code) {
-        final Optional<CodeData> result = StreamSupport.stream(codeRepository.findAll().spliterator(), true)
-                .filter(x -> x.getCode().equals(code)).findAny();
-        log.info("fetchByCode, code: {},  result : {}", code, result);
+    log.warn("fetchByCode, entity not found for code : {}", code);
+    return null; // can throw custom CodeNotFoundException as well
+  }
 
-        if (result.isPresent()) {
-            log.info("fetchByCode, entity found : {}", result.get());
-            return result.get();
-        }
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * gerimedica.code.service.CodeService#create(gerimedica.code.dto.CodeData)
+   */
+  @Override
+  public CodeData upload(CodeData code) {
+    log.info("upload,  codedata request : {}", code);
 
-        log.warn("fetchByCode, entity not found for code : {}", code);
-        return null; // can throw custom CodeNotFoundException as well
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * gerimedica.code.service.CodeService#create(gerimedica.code.dto.CodeData)
-     */
-    @Override
-    public CodeData upload(CodeData code) {
-        log.info("upload,  codedata request : {}", code);
-
-        final CodeData response = codeRepository.save(code);
-        log.info("upload, db response : {}", response);
-        return response;
-    }
-
+    final CodeData response = codeRepository.save(code);
+    log.info("upload, db response : {}", response);
+    return response;
+  }
 }

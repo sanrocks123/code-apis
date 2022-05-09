@@ -11,32 +11,27 @@ import gerimedica.code.dto.CodeData;
  * @email : sanrocks123@gmail.com
  * @version : 1.0
  */
-
 public interface CodeService {
 
-    /**
-     *
-     * @return
-     */
-    List<CodeData> deleteAll();
+  /**
+   * @return
+   */
+  List<CodeData> deleteAll();
 
-    /**
-     *
-     * @return
-     */
-    List<CodeData> fetchAll();
+  /**
+   * @return
+   */
+  List<CodeData> fetchAll();
 
-    /**
-     *
-     * @param code
-     * @return
-     */
-    CodeData fetchByCode(String code);
+  /**
+   * @param code
+   * @return
+   */
+  CodeData fetchByCode(String code);
 
-    /**
-     * @param code
-     * @return
-     */
-    CodeData upload(CodeData code);
-
+  /**
+   * @param code
+   * @return
+   */
+  CodeData upload(CodeData code);
 }

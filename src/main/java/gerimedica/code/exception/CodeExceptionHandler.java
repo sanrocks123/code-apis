@@ -14,39 +14,38 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * @email : sanrocks123@gmail.com
  * @version : 1.0
  */
-
 @ControllerAdvice
 public class CodeExceptionHandler {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
-    /**
-     *
-     * @param ex
-     * @return
-     */
-    @ExceptionHandler(value = { CodeCommonBaseException.class })
-    public ResponseEntity<CodeExceptionResponseDTO> handleCommonBaseException(CodeCommonBaseException ex) {
+  /**
+   * @param ex
+   * @return
+   */
+  @ExceptionHandler(value = {CodeCommonBaseException.class})
+  public ResponseEntity<CodeExceptionResponseDTO> handleCommonBaseException(
+      CodeCommonBaseException ex) {
 
-        log.error("error", ex);
-        return new ResponseEntity<>(new CodeExceptionResponseDTO(ex.getErrorCode(), ex.getErrorMessage()),
-                HttpStatus.valueOf(ex.getErrorCode()));
-    }
+    log.error("error", ex);
+    return new ResponseEntity<>(
+        new CodeExceptionResponseDTO(ex.getErrorCode(), ex.getErrorMessage()),
+        HttpStatus.valueOf(ex.getErrorCode()));
+  }
 
-    /**
-     *
-     * @param th
-     * @return
-     */
-    @ExceptionHandler(value = { Throwable.class })
-    public ResponseEntity<CodeExceptionResponseDTO> handleException(Throwable th) {
+  /**
+   * @param th
+   * @return
+   */
+  @ExceptionHandler(value = {Throwable.class})
+  public ResponseEntity<CodeExceptionResponseDTO> handleException(Throwable th) {
 
-        log.error("error", th);
-        return new ResponseEntity<>(new CodeExceptionResponseDTO("500", th.getMessage()),
-                HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    log.error("error", th);
+    return new ResponseEntity<>(
+        new CodeExceptionResponseDTO("500", th.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 
-    // add more custom exception handler and return http error status, error
-    // code chained etc
+  // add more custom exception handler and return http error status, error
+  // code chained etc
 
 }

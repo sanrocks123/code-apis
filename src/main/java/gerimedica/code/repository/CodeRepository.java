@@ -12,8 +12,12 @@ import gerimedica.code.dto.CodeData;
  * @email : sanrocks123@gmail.com
  * @version : 1.0
  */
-
 @Repository
 public interface CodeRepository extends CrudRepository<CodeData, Long> {
-    // I can add custom methods here
+
+  /**
+   * @param code
+   * @return
+   */
+  CodeData findByCode(String code);
 }
