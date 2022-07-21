@@ -1,5 +1,6 @@
 package gerimedica.code.service;
 
+import gerimedica.code.dto.DropBoxRequest;
 import gerimedica.code.util.TradeBotUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class DropBoxContentListingService {
 
-  public List<String> listFolderContents(final String extension) {
+  public List<String> listFolderContents(final DropBoxRequest dropBoxRequest) {
     String url = "https://api.dropboxapi.com/2/files/list_folder";
     long pageNo = 1;
     List<String> fileNames = new ArrayList<>();
@@ -29,7 +30,7 @@ public class DropBoxContentListingService {
                 .exchange(
                     url,
                     HttpMethod.POST,
-                    getHttpEntity(TradeBotUtils.getNodeByName("list-folder")),
+                    getHttpEntity(TradeBotUtils.getNodeByName("list-folder"), dropBoxRequest),
                     String.class)
                 .getBody());
 
@@ -45,7 +46,8 @@ public class DropBoxContentListingService {
       response =
           new JSONObject(
               restTemplate
-                  .exchange(url, HttpMethod.POST, getHttpEntity(pagedBody), String.class)
+                  .exchange(
+                      url, HttpMethod.POST, getHttpEntity(pagedBody, dropBoxRequest), String.class)
                   .getBody());
       // log.info("paginated response: {}", response.toString(4));
 
@@ -55,14 +57,17 @@ public class DropBoxContentListingService {
     log.info(".paper extension files\n");
     List<String> filteredFilesNames =
         fileNames.stream()
-            .filter(name -> name.endsWith("." + extension))
+            .filter(name -> name.endsWith("." + dropBoxRequest.getFilterFileExtensions()))
             .collect(Collectors.toList());
     filteredFilesNames.forEach(
         name -> {
           log.info("{}", name);
         });
 
-    log.info("total files with [{}] extension: [{}]\n", extension, filteredFilesNames.size());
+    log.info(
+        "total files with [{}] extension: [{}]\n",
+        dropBoxRequest.getFilterFileExtensions(),
+        filteredFilesNames.size());
     return filteredFilesNames;
   }
 
@@ -75,12 +80,10 @@ public class DropBoxContentListingService {
     }
   }
 
-  private HttpEntity getHttpEntity(JSONObject body) {
+  private HttpEntity getHttpEntity(JSONObject body, final DropBoxRequest dropBoxRequest) {
     HttpHeaders headers = new HttpHeaders();
     headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
-    headers.add(
-        HttpHeaders.AUTHORIZATION,
-        "Bearer sl.BL2t9izoOYtOTnOw6mSyQhlAX8Ks0cRGd6wcDaQgOA6FbJcceJrbb_WnGXnUE8gClyrOjtCU_-FdXh1xQnrrhmLbfyFF8iLuw7mAkWyWGFYWWDdjdBpRMNW7yVOUIcphje2T7Y7-H7OK");
+    headers.add(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", dropBoxRequest.getToken()));
     return new HttpEntity<String>(body.toString(), headers);
   }
 }
