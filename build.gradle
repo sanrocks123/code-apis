@@ -8,38 +8,37 @@ buildscript{
 
 apply plugin : 'application'
 
-mainClassName = 'gerimedica.code'
+mainClassName = 'gerimedica.code.main.CodeAPIServiceSelfHostApp'
 version = '1.0'
 
 repositories {
 		mavenCentral()		    
 	}
 
-//sourceCompatibility=1.11
-//targetCompatibility=1.11
-
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'code apis',
-                   'Implementation-Version': version
-    }
-}
+sourceCompatibility = 11
+targetCompatibility = 11
 
 dependencies {
 
-	implementation "org.springframework.boot:spring-boot-starter-web:1.5.8.RELEASE"
-   	implementation "org.json:json:20171018"
+	implementation 'org.springframework.boot:spring-boot-starter-web:2.7.0'
+   	implementation 'org.json:json:20220320'
 	   	
-   	implementation "com.fasterxml.jackson.core:jackson-databind:2.9.3"
-	implementation "com.fasterxml.jackson.core:jackson-annotations:2.9.3"
-	implementation "com.fasterxml.jackson.core:jackson-core:2.9.3"
+   	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.3'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.13.3'
+	implementation 'commons-io:commons-io:2.11.0'
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9';
 	
-   	implementation "io.springfox:springfox-swagger2:2.9.2"
-	implementation "io.springfox:springfox-swagger-ui:2.9.2"
-	implementation "org.webjars:jquery:2.2.4"
-	
-	implementation "org.springframework.boot:spring-boot-starter-data-jpa:1.5.8.RELEASE"
-	implementation "com.h2database:h2:1.4.193"				   	
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.0'
+	implementation 'com.h2database:h2:2.1.212'
+	implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+
+	//implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
+
+	compileOnly 'org.projectlombok:lombok:1.18.24'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
    	
 	}
 

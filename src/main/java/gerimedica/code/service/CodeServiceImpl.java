@@ -1,18 +1,15 @@
 package gerimedica.code.service;
 
+import gerimedica.code.dto.CodeData;
+import gerimedica.code.repository.CodeRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import gerimedica.code.dto.CodeData;
-import gerimedica.code.repository.CodeRepository;
 
 /**
  * Java Source CodeServiceImpl.java created on Oct 8, 2021
@@ -22,9 +19,8 @@ import gerimedica.code.repository.CodeRepository;
  * @version : 1.0
  */
 @Service
+@Slf4j
 public class CodeServiceImpl implements CodeService {
-
-  private final Logger log = LoggerFactory.getLogger(getClass());
 
   @Autowired private CodeRepository codeRepository;
 
